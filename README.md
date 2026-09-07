@@ -1,6 +1,6 @@
 # student-management-api
 
-A Spring Boot 4 REST API for managing students, courses, and enrollments.
+A Spring Boot 4 REST API for managing students and courses.
 
 This project is the web-layer evolution of the Student Management System
 capstone from [java-mastery](https://github.com/rachmania/java-mastery)
@@ -30,15 +30,26 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 mvn spring-boot:run
 ```
 
-The application starts an embedded server on port 8080. With no endpoints yet,
-a request to `http://localhost:8080/` returns 404 — expected until the first
-controller is added.
+The application starts an embedded server on port 8080. Once running, try
+`http://localhost:8080/api/students` to see the seeded data.
 
 ### Run the tests
 
 ```bash
 mvn test
 ```
+
+## API endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/students` | List all students |
+| GET | `/api/students/{id}` | Get a single student by ID (e.g. `S001`) |
+
+On startup, a few demo students and a course are seeded in-memory
+(see `DomainServiceConfig`), so these endpoints return data immediately.
+Data is not yet persisted — it resets on every restart until Spring Data
+JPA is introduced later in the build.
 
 ## Project structure
 
@@ -52,7 +63,7 @@ mvn test
 Built out module by module. Current status:
 
 - [x] Project scaffolding
-- [ ] Domain service wired in as a Spring bean
+- [x] Domain service wired in as a Spring bean
 - [ ] REST API (DTOs, versioning, error handling)
 - [ ] Persistence (Spring Data JPA)
 - [ ] Security (OAuth2 / Google login)
