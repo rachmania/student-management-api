@@ -45,11 +45,24 @@ mvn test
 |---|---|---|
 | GET | `/api/students` | List all students |
 | GET | `/api/students/{id}` | Get a single student by ID (e.g. `S001`) |
+| GET | `/api/students/page/{page}` | Get a page of students (page size set via `student-api.default-page-size`) |
 
 On startup, a few demo students and a course are seeded in-memory
 (see `DomainServiceConfig`), so these endpoints return data immediately.
 Data is not yet persisted — it resets on every restart until Spring Data
 JPA is introduced later in the build.
+
+## Configuration
+
+Application settings live in `src/main/resources/application.yml` under the
+`student-api` prefix and are validated at startup — an out-of-range value
+stops the app from booting.
+
+| Property | Default | Constraint | Description |
+|---|---|---|---|
+| `student-api.default-page-size` | `20` | 1–100 | Students returned per page |
+| `student-api.default-sort-field` | `name` | — | Field used to sort paged results |
+| `student-api.support-email` | — | valid email | Support contact address |
 
 ## Project structure
 
