@@ -64,6 +64,21 @@ stops the app from booting.
 | `student-api.default-sort-field` | `name` | — | Field used to sort paged results |
 | `student-api.support-email` | — | valid email | Support contact address |
 
+### Profiles
+
+Environment-specific settings live in profile files loaded alongside the base
+`application.yml`:
+
+- `application-dev.yml` — verbose (`DEBUG`) logging for local development
+- `application-prod.yml` — quieter (`INFO`) logging; database settings (Module 11)
+  read secrets from environment variables, never committed
+
+Activate a profile at launch:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
 ## Project structure
 
 | Package | Contents |

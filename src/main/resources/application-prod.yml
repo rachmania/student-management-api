@@ -1,0 +1,9 @@
+# application-prod.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/studentdb
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+logging:
+  level:
+    com.studentmanagement: INFO
