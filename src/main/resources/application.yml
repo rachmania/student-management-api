@@ -13,3 +13,6 @@ student-api:
   default-page-size: 20
   default-sort-field: name
   support-email: support@hardknox.edu
+  feature:
+    audit-log:
+      enabled: true

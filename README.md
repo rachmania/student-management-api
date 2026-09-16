@@ -63,6 +63,7 @@ stops the app from booting.
 | `student-api.default-page-size` | `20` | 1–100 | Students returned per page |
 | `student-api.default-sort-field` | `name` | — | Field used to sort paged results |
 | `student-api.support-email` | — | valid email | Support contact address |
+| `student-api.feature.audit-log.enabled` | `true` | true/false | Toggles audit logging of student queries |
 
 ### Profiles
 
