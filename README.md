@@ -16,6 +16,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **Maven** — build and dependency management
 - **Lombok** — boilerplate reduction
 - **Bean Validation** (jakarta.validation)
+- **Thymeleaf** — server-side HTML templating
 
 ## Getting started
 
@@ -46,6 +47,7 @@ mvn test
 | GET | `/api/students` | List all students |
 | GET | `/api/students/{id}` | Get a single student by ID (e.g. `S001`) |
 | GET | `/api/students/page/{page}` | Get a page of students (page size set via `student-api.default-page-size`) |
+| GET/POST | `/students` | Server-rendered HTML page: list students and add one (Thymeleaf) |
 
 On startup, a few demo students and a course are seeded in-memory
 (see `DomainServiceConfig`), so these endpoints return data immediately.

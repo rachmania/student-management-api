@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head><title>Students</title></head>
+<body>
+<h1>Students</h1>
+<ul>
+    <li th:each="student : ${students}" th:text="${student.name() + ' (' + student.id() + ') — GPA ' + student.gpa()}"></li>
+</ul>
+
+<form th:action="@{/students}" method="post">
+    <label for="studentId">Student ID</label>
+    <input type="text" name="id" id="studentId" placeholder="Student ID (e.g. S004)"/>
+    <label for="fullName">Full Name</label>
+    <input type="text" name="name" id="fullName" placeholder="Full name"/>
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" placeholder="Email"/>
+    <label for="gpa">GPA</label>
+    <input type="number" step="0.1" id="gpa" name="gpa" placeholder="GPA"/>
+    <button type="submit">Add Student</button>
+</form>
+</body>
+</html>
