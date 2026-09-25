@@ -18,7 +18,7 @@ public class DomainServiceConfig {
     @Bean
     CommandLineRunner seedDemoData(StudentManagementService studentManagementService) {
         return args -> {
-            studentManagementService.addStudent(new Student("S001", "Rachmania", "rachmania@hardknox.edu", 3.9));
+            studentManagementService.addStudent(new Student("S001", "Rachmania", "rachmania@hardknox.edu", 3.95));
             studentManagementService.addStudent(new Student("S002", "Alice", "alice.maitland@hardknox.edu", 3.2));
             studentManagementService.addCourse(new Course("CS230", "Advanced Java Programming", 3, 2));
         };

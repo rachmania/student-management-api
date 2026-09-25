@@ -1,6 +1,6 @@
 # student-management-api
 
-A Spring Boot 4 REST API for managing students and courses.
+A Spring Boot 4 REST API for managing students, courses, and enrollments.
 
 This project is the web-layer evolution of the Student Management System
 capstone from [java-mastery](https://github.com/rachmania/java-mastery)
@@ -47,7 +47,22 @@ mvn test
 | GET | `/api/students` | List all students |
 | GET | `/api/students/{id}` | Get a single student by ID (e.g. `S001`) |
 | GET | `/api/students/page/{page}` | Get a page of students (page size set via `student-api.default-page-size`) |
+| POST | `/api/students` | Create a student (validated; returns 201 with a `Location` header) |
+| POST | `/api/students/{studentId}/enroll/{courseCode}` | Enroll a student in a course |
 | GET/POST | `/students` | Server-rendered HTML page: list students and add one (Thymeleaf) |
+
+## Error handling
+
+Errors are returned as [RFC 9457 Problem Detail](https://www.rfc-editor.org/rfc/rfc9457)
+responses (`application/problem+json`), consistent across the API:
+
+| Status | When |
+|---|---|
+| 400 Bad Request | Request body fails validation (includes a per-field `errors` map) |
+| 404 Not Found | Student or course does not exist |
+| 409 Conflict | Duplicate ID, or an enrollment conflict (already enrolled / course full) |
+
+Stack traces are never included in error responses.
 
 On startup, a few demo students and a course are seeded in-memory
 (see `DomainServiceConfig`), so these endpoints return data immediately.
