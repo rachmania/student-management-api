@@ -5,6 +5,7 @@ import com.javamastery.module10.Student;
 import com.javamastery.module10.StudentManagementService;
 import com.studentmanagement.dto.StudentRequest;
 import com.studentmanagement.dto.StudentResponse;
+import com.studentmanagement.dto.StudentResponseV2;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,14 @@ public class StudentController {
                 .toList();
     }
 
-    @GetMapping("/{id}")
-    public StudentResponse getOne(@PathVariable String id) {
+    @GetMapping(path = "/{id}", version = "1")
+    public StudentResponse getStudentV1(@PathVariable String id) {
         return StudentResponse.from(studentManagementService.getStudent(id));
+    }
+
+    @GetMapping(path = "/{id}", version = "2")
+    public StudentResponseV2 getStudentV2(@PathVariable String id) {
+        return StudentResponseV2.from(studentManagementService.getStudent(id), studentManagementService);
     }
 
     @PostMapping

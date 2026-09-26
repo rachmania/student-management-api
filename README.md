@@ -51,6 +51,12 @@ mvn test
 | POST | `/api/students/{studentId}/enroll/{courseCode}` | Enroll a student in a course |
 | GET/POST | `/students` | Server-rendered HTML page: list students and add one (Thymeleaf) |
 
+### API versioning
+
+Student-detail endpoints are versioned via the `X-API-Version` header
+(`1` or `2`; defaults to `1` if omitted). Version `2` adds derived fields
+(`enrolledCourseCount`, `honorRoll`) not present in version `1`.
+
 ## Error handling
 
 Errors are returned as [RFC 9457 Problem Detail](https://www.rfc-editor.org/rfc/rfc9457)
@@ -110,7 +116,7 @@ Built out module by module. Current status:
 
 - [x] Project scaffolding
 - [x] Domain service wired in as a Spring bean
-- [ ] REST API (DTOs, versioning, error handling)
+- [x] REST API (DTOs, versioning, error handling)
 - [ ] Persistence (Spring Data JPA)
 - [ ] Security (OAuth2 / Google login)
 - [ ] Testing (JUnit, MockMvc, Testcontainers)
