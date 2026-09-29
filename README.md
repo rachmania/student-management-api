@@ -17,6 +17,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **Lombok** — boilerplate reduction
 - **Bean Validation** (jakarta.validation)
 - **Thymeleaf** — server-side HTML templating
+- **springdoc-openapi** — OpenAPI 3 / Swagger UI documentation
 
 ## Getting started
 
@@ -51,6 +52,11 @@ mvn test
 | POST | `/api/students/{studentId}/enroll/{courseCode}` | Enroll a student in a course |
 | GET/POST | `/students` | Server-rendered HTML page: list students and add one (Thymeleaf) |
 
+On startup, a few demo students and a course are seeded in-memory
+(see `DomainServiceConfig`), so these endpoints return data immediately.
+Data is not yet persisted — it resets on every restart until Spring Data
+JPA is introduced later in the build.
+
 ### API versioning
 
 Student-detail endpoints are versioned via the `X-API-Version` header
@@ -70,10 +76,11 @@ responses (`application/problem+json`), consistent across the API:
 
 Stack traces are never included in error responses.
 
-On startup, a few demo students and a course are seeded in-memory
-(see `DomainServiceConfig`), so these endpoints return data immediately.
-Data is not yet persisted — it resets on every restart until Spring Data
-JPA is introduced later in the build.
+## API documentation
+
+Interactive API docs (Swagger UI) are available in development at
+`http://localhost:8080/swagger-ui.html`, with the raw OpenAPI spec at
+`/v3/api-docs`. Documentation endpoints are disabled in the `prod` profile.
 
 ## Configuration
 
