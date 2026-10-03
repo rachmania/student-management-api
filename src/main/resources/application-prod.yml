@@ -4,11 +4,12 @@ spring:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/studentdb
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  springdoc:
-    api-docs:
-      enabled: false
-    swagger-ui:
-      enabled: false
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 
 logging:
   level:

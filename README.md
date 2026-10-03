@@ -18,6 +18,8 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **Bean Validation** (jakarta.validation)
 - **Thymeleaf** — server-side HTML templating
 - **springdoc-openapi** — OpenAPI 3 / Swagger UI documentation
+- **Spring Data JPA** (Hibernate) — persistence
+- **H2** — file-based database (development)
 
 ## Getting started
 
@@ -52,10 +54,10 @@ mvn test
 | POST | `/api/students/{studentId}/enroll/{courseCode}` | Enroll a student in a course |
 | GET/POST | `/students` | Server-rendered HTML page: list students and add one (Thymeleaf) |
 
-On startup, a few demo students and a course are seeded in-memory
-(see `DomainServiceConfig`), so these endpoints return data immediately.
-Data is not yet persisted — it resets on every restart until Spring Data
-JPA is introduced later in the build.
+On startup, a few demo students and a course are seeded if not already
+present (see `DomainServiceConfig`). Students are persisted to an H2
+file-based database and survive restarts; courses and enrollments are
+currently held in-memory and reset on restart.
 
 ### API versioning
 
@@ -97,12 +99,10 @@ stops the app from booting.
 
 ### Profiles
 
-Environment-specific settings live in profile files loaded alongside the base
-`application.yml`:
+Environment-specific settings live in profile files loaded alongside the base `application.yml`:
 
-- `application-dev.yml` — verbose (`DEBUG`) logging for local development
-- `application-prod.yml` — quieter (`INFO`) logging; database settings (Module 11)
-  read secrets from environment variables, never committed
+- `application-dev.yml` — verbose (`DEBUG`) logging; file-based H2 database and console
+- `application-prod.yml` — quieter (`INFO`) logging; PostgreSQL settings that read credentials from environment variables, never committed
 
 Activate a profile at launch:
 
@@ -110,12 +110,11 @@ Activate a profile at launch:
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-## Project structure
-
 | Package | Contents |
 |---|---|
 | `com.studentmanagement` | Application entry point and new web-layer code (controllers, DTOs, config) |
 | `com.javamastery.module10` | The capstone domain — copied unchanged from java-mastery |
+| `com.javamastery.module10.persistence` | JPA entities and Spring Data repositories (added in the persistence refactor) |
 
 ## Roadmap
 
@@ -124,7 +123,7 @@ Built out module by module. Current status:
 - [x] Project scaffolding
 - [x] Domain service wired in as a Spring bean
 - [x] REST API (DTOs, versioning, error handling)
-- [ ] Persistence (Spring Data JPA)
+- [x] Persistence (Spring Data JPA)
 - [ ] Security (OAuth2 / Google login)
 - [ ] Testing (JUnit, MockMvc, Testcontainers)
 - [ ] Containerization (Docker)

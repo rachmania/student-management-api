@@ -1,4 +1,5 @@
 package com.javamastery.module10.persistence;
 
-public interface StudentJpaRepository {
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentJpaRepository extends JpaRepository<StudentEntity, String> {}
