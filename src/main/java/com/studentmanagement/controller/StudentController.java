@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
+
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
@@ -52,6 +55,7 @@ public class StudentController {
     @ApiResponse(responseCode = "201", description = "Student created")
     @ApiResponse(responseCode = "409", description = "A student with this id already exists")
     @ApiResponse(responseCode = "500", description = "The server is temporarily unable to handle your request. Please try again later")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
         Student student = new Student(request.id(), request.name(), request.email(), request.gpa());

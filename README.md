@@ -20,6 +20,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **springdoc-openapi** — OpenAPI 3 / Swagger UI documentation
 - **Spring Data JPA** (Hibernate) — persistence
 - **H2** — file-based database (development)
+- **Spring Security** — authentication and role-based authorization
 
 ## Getting started
 
@@ -54,6 +55,9 @@ mvn test
 | POST | `/api/students/{studentId}/enroll/{courseCode}` | Enroll a student in a course |
 | GET/POST | `/students` | Server-rendered HTML page: list students and add one (Thymeleaf) |
 
+Write operations (`POST`) require authentication with the `ADMIN` role;
+read operations (`GET`) are public. See **Security** below.
+
 On startup, a few demo students and a course are seeded if not already
 present (see `DomainServiceConfig`). Students are persisted to an H2
 file-based database and survive restarts; courses and enrollments are
@@ -77,6 +81,23 @@ responses (`application/problem+json`), consistent across the API:
 | 409 Conflict | Duplicate ID, or an enrollment conflict (already enrolled / course full) |
 
 Stack traces are never included in error responses.
+
+## Security
+
+The API uses HTTP Basic authentication with role-based authorization:
+
+| Operation | Access |
+|---|---|
+| `GET` endpoints | Public — no authentication required |
+| `POST` endpoints | Requires authentication with the `ADMIN` role |
+
+Authentication failures return **401 Unauthorized**; authenticated requests
+lacking the required role return **403 Forbidden**.
+
+> **Note:** Users are currently defined in-memory for development
+> (see `SecurityConfig`). A persistent user store and OAuth2 / Google
+> login are introduced in a later module. Credentials are not documented
+> here and should *never* be committed in a real application.
 
 ## API documentation
 
