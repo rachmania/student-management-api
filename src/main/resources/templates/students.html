@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head><title>Students</title></head>
 <body>
+<p th:if="${userEmail}" th:text="'Signed in as: ' + ${userEmail}"></p>
 <h1>Students</h1>
 <ul>
     <li th:each="student : ${students}" th:text="${student.name() + ' (' + student.id() + ') — GPA ' + student.gpa()}"></li>

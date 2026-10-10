@@ -84,20 +84,19 @@ Stack traces are never included in error responses.
 
 ## Security
 
-The API uses HTTP Basic authentication with role-based authorization:
+The application uses two authentication mechanisms for its two audiences:
 
-| Operation | Access |
-|---|---|
-| `GET` endpoints | Public — no authentication required |
-| `POST` endpoints | Requires authentication with the `ADMIN` role |
+- **JSON API** (`/api/students/**`) — HTTP Basic authentication. `GET` is
+  public; `POST` requires the `ADMIN` role.
+- **Web pages** (`/students`) — OAuth2 login via Google. Viewing the student
+  list is public; adding a student requires signing in.
 
 Authentication failures return **401 Unauthorized**; authenticated requests
 lacking the required role return **403 Forbidden**.
 
-> **Note:** Users are currently defined in-memory for development
-> (see `SecurityConfig`). A persistent user store and OAuth2 / Google
-> login are introduced in a later module. Credentials are not documented
-> here and should *never* be committed in a real application.
+> **Note:** API users are defined in-memory for development (see `SecurityConfig`);
+> Google OAuth credentials are supplied via environment variables and never
+> committed. Credentials are not documented here.
 
 ## API documentation
 
@@ -145,7 +144,7 @@ Built out module by module. Current status:
 - [x] Domain service wired in as a Spring bean
 - [x] REST API (DTOs, versioning, error handling)
 - [x] Persistence (Spring Data JPA)
-- [ ] Security (OAuth2 / Google login)
+- [x] Security (OAuth2 / Google login)
 - [ ] Testing (JUnit, MockMvc, Testcontainers)
 - [ ] Containerization (Docker)
 - [ ] Observability (Actuator, metrics, structured logging)

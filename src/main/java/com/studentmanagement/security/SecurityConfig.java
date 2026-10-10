@@ -25,11 +25,14 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/students").permitAll()        // NEW: HTML list page is public
+                        .requestMatchers(HttpMethod.POST, "/students").authenticated()   // NEW: HTML add-form requires login
                         .requestMatchers(HttpMethod.GET, "/api/students/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/students/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults())                                   // NEW: enables "Sign in with Google"
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
