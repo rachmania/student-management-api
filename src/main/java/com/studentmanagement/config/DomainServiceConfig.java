@@ -4,7 +4,12 @@ import com.javamastery.module10.Course;
 import com.javamastery.module10.Student;
 import com.javamastery.module10.StudentManagementService;
 import com.javamastery.module10.StudentNotFoundException;
+import com.javamastery.module10.persistence.StudentEntity;
 import com.javamastery.module10.persistence.StudentJpaRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +18,8 @@ import java.util.NoSuchElementException;
 
 @Configuration
 public class DomainServiceConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(DomainServiceConfig.class);
 
     @Bean
     public StudentManagementService studentManagementService(StudentJpaRepository studentRepository) {
@@ -25,6 +32,19 @@ public class DomainServiceConfig {
             seedStudentIfAbsent(studentManagementService, new Student("S001", "Rachmania", "rachmania@hardknox.edu", 3.95));
             seedStudentIfAbsent(studentManagementService, new Student("S002", "Alice", "alice.maitland@hardknox.edu", 3.2));
             seedCourseIfAbsent(studentManagementService, new Course("CS230", "Advanced Java Programming", 3, 2));
+        };
+    }
+
+    @Bean
+    CommandLineRunner seedEncryptionTest(StudentJpaRepository studentJpaRepository) {
+        return args -> {
+            if (!studentJpaRepository.existsById("S900")) {
+                StudentEntity test = new StudentEntity("S900", "Crypto Test", "crypto@hardknox.edu", 3.0);
+                test.setNationalId("987-65-4321");
+                studentJpaRepository.save(test); // ⬅️ THIS is "the save"
+            }
+            logger.info("Decrypted nationalId for S900: {}",
+                    studentJpaRepository.findById("S900").get().getNationalId());
         };
     }
 

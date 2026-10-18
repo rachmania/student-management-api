@@ -1,0 +1,8 @@
+server:
+  port: 8443                                  # HTTPS dev port (vs 8080 for HTTP)
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12         # the file keytool just made
+    key-store-password: ${KEYSTORE_PASSWORD}  # the password you set in env var
+    key-store-type: PKCS12                    # matches -storetype
+    key-alias: student-api                    # matches -alias

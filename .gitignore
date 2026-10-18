@@ -7,6 +7,9 @@ target/
 ### H2 file-based database ###
 /data/
 
+# TLS keystore (contains a private key)
+keystore.p12
+
 ### STS ###
 .apt_generated
 .classpath

@@ -97,6 +97,18 @@ lacking the required role return **403 Forbidden**.
 > **Note:** API users are defined in-memory for development (see `SecurityConfig`);
 > Google OAuth credentials are supplied via environment variables and never
 > committed. Credentials are not documented here.
+> 
+> ### Data protection
+
+- **At rest:** sensitive fields (e.g. a student's national ID) are encrypted
+  in the database via a JPA `AttributeConverter` (AES). The encryption key is
+  supplied through the `STUDENT_API_FIELD_KEY` environment variable and is
+  never committed. Stored values are ciphertext; the application works with
+  plaintext transparently.
+- **In transit:** HTTPS/TLS is available via the `https` profile
+  (`mvn spring-boot:run -Dspring-boot.run.profiles=dev,https`), serving on
+  port 8443 with a self-signed certificate for local development. Production
+  deployments would use a CA-issued certificate.
 
 ## API documentation
 
