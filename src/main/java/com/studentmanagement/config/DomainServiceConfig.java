@@ -14,6 +14,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.context.annotation.Profile;
+
 import java.util.NoSuchElementException;
 
 @Configuration
@@ -36,6 +38,7 @@ public class DomainServiceConfig {
     }
 
     @Bean
+    @Profile("demo")
     CommandLineRunner seedEncryptionTest(StudentJpaRepository studentJpaRepository) {
         return args -> {
             if (!studentJpaRepository.existsById("S900")) {
