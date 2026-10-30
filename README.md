@@ -97,8 +97,8 @@ lacking the required role return **403 Forbidden**.
 > **Note:** API users are defined in-memory for development (see `SecurityConfig`);
 > Google OAuth credentials are supplied via environment variables and never
 > committed. Credentials are not documented here.
-> 
-> ### Data protection
+
+### Data protection
 
 - **At rest:** sensitive fields (e.g. a student's national ID) are encrypted
   in the database via a JPA `AttributeConverter` (AES). The encryption key is
@@ -116,6 +116,32 @@ Interactive API docs (Swagger UI) are available in development at
 `http://localhost:8080/swagger-ui.html`, with the raw OpenAPI spec at
 `/v3/api-docs`. Documentation endpoints are disabled in the `prod` profile.
 
+## Testing
+
+The project has a three-layer test suite (16 tests):
+
+| Layer | Scope | Speed | Needs Docker? |
+|---|---|---|---|
+| **Unit** | Service logic with a mocked repository | Fast | No |
+| **Web** (`MockMvc`) | Controllers, status codes, JSON, security — service mocked | Fast | No |
+| **Integration** (Testcontainers) | Repository against a real PostgreSQL container | Slower | **Yes** |
+
+### Running the tests
+
+```bash
+mvn test
+```
+
+**Prerequisites:**
+
+- **Docker must be running** for the Testcontainers integration tests — they
+  start a disposable PostgreSQL container. Verify with `docker ps` (an empty
+  table means the daemon is reachable). The first run pulls the
+  `postgres:16-alpine` image, so it will be slower; later runs reuse the cached image.
+- **Environment variables** must be set for any test that boots the full
+  application context (`STUDENT_API_FIELD_KEY`, and the OAuth/keystore values if
+  those paths are exercised). Set them in the same terminal before running.
+
 ## Configuration
 
 Application settings live in `src/main/resources/application.yml` under the
@@ -125,7 +151,7 @@ stops the app from booting.
 | Property | Default | Constraint | Description |
 |---|---|---|---|
 | `student-api.default-page-size` | `20` | 1–100 | Students returned per page |
-| `student-api.default-sort-field` | `name` | — | Field used to sort paged results |
+| `student-api.default-sort-field` | `name` | — | Reserved for future dynamic sorting (currently sorts by name) |
 | `student-api.support-email` | — | valid email | Support contact address |
 | `student-api.feature.audit-log.enabled` | `true` | true/false | Toggles audit logging of student queries |
 
@@ -142,6 +168,8 @@ Activate a profile at launch:
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
+## Project structure
+
 | Package | Contents |
 |---|---|
 | `com.studentmanagement` | Application entry point and new web-layer code (controllers, DTOs, config) |
@@ -157,7 +185,7 @@ Built out module by module. Current status:
 - [x] REST API (DTOs, versioning, error handling)
 - [x] Persistence (Spring Data JPA)
 - [x] Security (OAuth2 / Google login)
-- [ ] Testing (JUnit, MockMvc, Testcontainers)
+- [x] Testing (JUnit, MockMvc, Testcontainers)
 - [ ] Containerization (Docker)
 - [ ] Observability (Actuator, metrics, structured logging)
 
