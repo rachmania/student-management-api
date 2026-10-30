@@ -1,0 +1,23 @@
+# Test-only configuration — dummy/valid values so the context boots without real secrets
+student-api:
+  default-page-size: 20
+  default-sort-field: name
+  support-email: test@example.com
+  feature:
+    audit-log:
+      enabled: false
+
+spring:
+  mvc:
+    apiversion:
+      use:
+        header: X-API-Version
+      default: "1"
+      supported: "1,2"
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "test-client-id"
+            client-secret: "test-client-secret"
