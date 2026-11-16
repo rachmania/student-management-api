@@ -20,7 +20,9 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **springdoc-openapi** — OpenAPI 3 / Swagger UI documentation
 - **Spring Data JPA** (Hibernate) — persistence
 - **H2** — file-based database (development)
+- **PostgreSQL** — database for containerized and production runs
 - **Spring Security** — authentication and role-based authorization
+- **Docker & Docker Compose** — containerization and multi-container orchestration
 
 ## Getting started
 
@@ -28,6 +30,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 
 - JDK 21 or newer
 - Maven 3.9+
+- Docker Desktop — for the containerized runs below and the Testcontainers tests
 
 ### Run locally
 
@@ -44,6 +47,66 @@ The application starts an embedded server on port 8080. Once running, try
 mvn test
 ```
 
+## Running with Docker
+
+The service is packaged as an OCI image two ways — a hand-written multi-stage
+Dockerfile and Cloud Native Buildpacks (`mvn spring-boot:build-image`, no
+Dockerfile required). It runs as a multi-container Docker Compose stack
+(Spring Boot + PostgreSQL), with application data persisted in a named volume
+across restarts. For local development, Spring Boot's Docker Compose support
+auto-provisions and wires a PostgreSQL container on `mvn spring-boot:run`.
+
+### Required environment variables
+
+Set these in your shell, or in a `.env` file in the project root (the full
+stack reads `.env` automatically):
+
+- `STUDENT_API_FIELD_KEY` — AES key for field encryption (16/24/32 chars)
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — OAuth2 client credentials
+
+### Build the image
+
+```bash
+# Option A — multi-stage Dockerfile
+docker build -t student-management-api:0.0.1 .
+
+# Option B — Cloud Native Buildpacks, no Dockerfile
+mvn spring-boot:build-image
+```
+
+### Run standalone (in-memory H2)
+
+```bash
+docker run -p 8080:8080 \
+  -e STUDENT_API_FIELD_KEY -e GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET \
+  student-management-api:0.0.1
+```
+
+Data is ephemeral — with no Spring profile active, the app falls back to an
+in-memory H2 database, which is lost when the container stops.
+
+### Run the full stack (app + PostgreSQL, persistent)
+
+The `docker-compose.prod.yml` stack references the application image by name,
+so build it first (see **Build the image** above). PostgreSQL is supplied by
+the stack itself — it runs as a container alongside the app, so no separate
+database install is needed (the standalone and local-Maven runs use H2 instead).
+
+```bash
+docker compose -f docker-compose.prod.yml up
+```
+
+- App and PostgreSQL run as networked containers.
+- Data persists in the `pgdata` named volume across restarts.
+- Stop with `docker compose -f docker-compose.prod.yml down` (add `-v` to also
+  delete the volume and its data).
+
+### Local development
+
+With the `spring-boot-docker-compose` dependency and `compose.yaml` present,
+`mvn spring-boot:run` automatically starts a PostgreSQL container and wires the
+datasource for you — no manual connection configuration needed.
+
 ## API endpoints
 
 | Method | Path | Description |
@@ -59,8 +122,9 @@ Write operations (`POST`) require authentication with the `ADMIN` role;
 read operations (`GET`) are public. See **Security** below.
 
 On startup, a few demo students and a course are seeded if not already
-present (see `DomainServiceConfig`). Students are persisted to an H2
-file-based database and survive restarts; courses and enrollments are
+present (see `DomainServiceConfig`). By default, students are persisted to an
+H2 file-based database and survive restarts (or to PostgreSQL when run via the
+Docker stack — see **Running with Docker**); courses and enrollments are
 currently held in-memory and reset on restart.
 
 ### API versioning
@@ -186,7 +250,7 @@ Built out module by module. Current status:
 - [x] Persistence (Spring Data JPA)
 - [x] Security (OAuth2 / Google login)
 - [x] Testing (JUnit, MockMvc, Testcontainers)
-- [ ] Containerization (Docker)
+- [x] Containerization (Docker)
 - [ ] Observability (Actuator, metrics, structured logging)
 
 ## License

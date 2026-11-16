@@ -21,6 +21,9 @@ spring:
         header: X-API-Version
       default: "1"
       supported: "1,2"
+  jpa:                          # <-- new addition
+    hibernate:                  # <-- new addition
+      ddl-auto: create-drop     # <-- new addition
 
 server:
   port: 8080

@@ -14,7 +14,8 @@ services:
       retries: 5
 
   app:
-    build: .
+    # build: .  # option A: build from your Dockerfile
+    image: student-management-api:0.0.1    # built via the Dockerfile (see README "Build the image")
     depends_on:
       postgres:
         condition: service_healthy
@@ -22,10 +23,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/studentdb
       SPRING_DATASOURCE_USERNAME: student_api
       SPRING_DATASOURCE_PASSWORD: devpassword
+      SPRING_JPA_HIBERNATE_DDLAUTO: update          # env var — launcher-independent
       STUDENT_API_FIELD_KEY: ${STUDENT_API_FIELD_KEY}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-    command: ["--spring.jpa.hibernate.ddl-auto=update"]
     ports:
       - "8080:8080"
 
