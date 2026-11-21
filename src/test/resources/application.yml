@@ -14,6 +14,10 @@ spring:
         header: X-API-Version
       default: "1"
       supported: "1,2"
+  rabbitmq:
+      listener:
+        simple:
+          auto-startup: false
   security:
     oauth2:
       client:

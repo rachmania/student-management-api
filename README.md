@@ -23,6 +23,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **PostgreSQL** — database for containerized and production runs
 - **Spring Security** — authentication and role-based authorization
 - **Docker & Docker Compose** — containerization and multi-container orchestration
+- **RabbitMQ / Spring AMQP** — asynchronous messaging (event publish/consume)
 
 ## Getting started
 
@@ -103,7 +104,7 @@ docker compose -f docker-compose.prod.yml up
 
 ### Local development
 
-With the `spring-boot-docker-compose` dependency and `compose.yaml` present,
+With the `spring-boot-docker-compose` dependency and `compose.yml` present,
 `mvn spring-boot:run` automatically starts a PostgreSQL container and wires the
 datasource for you — no manual connection configuration needed.
 
@@ -180,6 +181,24 @@ Interactive API docs (Swagger UI) are available in development at
 `http://localhost:8080/swagger-ui.html`, with the raw OpenAPI spec at
 `/v3/api-docs`. Documentation endpoints are disabled in the `prod` profile.
 
+## Messaging
+
+Enrolling a student publishes a `StudentEnrolledEvent` to RabbitMQ, which a
+listener consumes asynchronously — demonstrating event-driven communication
+alongside the synchronous REST API. The enrollment HTTP call returns
+immediately; the notification is handled on a separate thread, off the broker,
+so the two are decoupled.
+
+- **Broker:** RabbitMQ runs as a container (defined in `compose.yml`),
+  auto-started and auto-wired via Spring Boot's Docker Compose support on
+  `mvn spring-boot:run` — no connection configuration needed in development.
+- **Queue:** `student.enrollment` (durable — messages survive a broker restart
+  and wait until a consumer is available).
+- **Serialization:** events travel as JSON (`JacksonJsonMessageConverter`), so
+  payloads are readable and not tied to Java-only consumers.
+- **Management UI:** browse `http://localhost:15672` (guest/guest) to inspect
+  queues, message counts, and payloads.
+
 ## Testing
 
 The project has a three-layer test suite (16 tests):
@@ -251,6 +270,7 @@ Built out module by module. Current status:
 - [x] Security (OAuth2 / Google login)
 - [x] Testing (JUnit, MockMvc, Testcontainers)
 - [x] Containerization (Docker)
+- [x] Messaging (RabbitMQ, async events)
 - [ ] Observability (Actuator, metrics, structured logging)
 
 ## License

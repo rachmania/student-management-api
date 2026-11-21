@@ -1,5 +1,7 @@
 package com.studentmanagement.controller;
 
+import com.studentmanagement.messaging.EnrollmentPublisher;
+
 import com.javamastery.module10.EnrollmentException;
 import com.javamastery.module10.Student;
 import com.javamastery.module10.StudentManagementService;
@@ -30,6 +32,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class StudentController {
 
     private final StudentManagementService studentManagementService;
+    private final EnrollmentPublisher enrollmentPublisher;
+
 
     @GetMapping
     public List<StudentResponse> getAll() {
@@ -68,7 +72,7 @@ public class StudentController {
     @PostMapping("/{studentId}/enroll/{courseCode}")
     public ResponseEntity<Void> enroll(@PathVariable String studentId,
                                        @PathVariable String courseCode) throws EnrollmentException {
-        studentManagementService.enroll(studentId, courseCode);
+        enrollmentPublisher.enroll(studentId, courseCode);
         return ResponseEntity.ok().build();
     }
 }
