@@ -24,6 +24,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **Spring Security** — authentication and role-based authorization
 - **Docker & Docker Compose** — containerization and multi-container orchestration
 - **RabbitMQ / Spring AMQP** — asynchronous messaging (event publish/consume)
+- **Spring Boot HTTP Service Clients** — declarative, interface-based REST clients
 
 ## Getting started
 
@@ -198,6 +199,17 @@ so the two are decoupled.
   payloads are readable and not tied to Java-only consumers.
 - **Management UI:** browse `http://localhost:15672` (guest/guest) to inspect
   queues, message counts, and payloads.
+
+### Synchronous service calls
+
+Enrollment also makes a synchronous, declarative HTTP call to a (stubbed)
+notification service, using Spring Boot 4's HTTP Service Clients: the
+`NotificationServiceClient` interface is annotated with `@GetExchange` /
+`@PostExchange`, registered via `@ImportHttpServices`, and Spring generates the
+implementation — no hand-written client code. The base URL is externalized under
+`spring.http.serviceclient.notifications.base-url`. This is the request-response
+counterpart to the asynchronous RabbitMQ event: the HTTP call blocks for a
+response, while the event is fire-and-forget.
 
 ## Testing
 

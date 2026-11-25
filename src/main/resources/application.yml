@@ -1,4 +1,9 @@
 spring:
+  http:
+    serviceclient:
+      notifications: # must match the @ImportHttpServices group name
+        base-url: http://localhost:8080
+
   security:
     oauth2:
       client:
