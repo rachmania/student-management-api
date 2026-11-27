@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/students/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/students/**").hasRole("ADMIN")
                         .requestMatchers("/notifications/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()   // NEW: public health check
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

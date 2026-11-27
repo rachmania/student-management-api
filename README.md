@@ -25,6 +25,7 @@ wrapped in a REST and web layer here. The two are sibling projects sharing the
 - **Docker & Docker Compose** — containerization and multi-container orchestration
 - **RabbitMQ / Spring AMQP** — asynchronous messaging (event publish/consume)
 - **Spring Boot HTTP Service Clients** — declarative, interface-based REST clients
+- **Spring Boot Actuator / Micrometer** — health, metrics, structured logging
 
 ## Getting started
 
@@ -211,6 +212,23 @@ implementation — no hand-written client code. The base URL is externalized und
 counterpart to the asynchronous RabbitMQ event: the HTTP call blocks for a
 response, while the event is fire-and-forget.
 
+## Observability
+
+Operational state is exposed through observability's three pillars:
+
+- **Actuator** — `/actuator/health` (public; includes liveness/readiness groups),
+  with `/actuator/info` and `/actuator/metrics` behind authentication. Exposure is
+  a deliberate, minimal allowlist (`management.endpoints.web.exposure.include`).
+- **Metrics** — a custom Micrometer `students.created` counter, incremented in
+  `InstrumentedStudentService` so the domain service stays untouched; read it at
+  `/actuator/metrics/students.created`.
+- **Structured logging** — the console stays human-readable while
+  `logs/application.json` is written as ECS-format JSON
+  (`logging.structured.format.file: ecs`) for log aggregators.
+
+Distributed tracing (OpenTelemetry, under `management.opentelemetry.*`) is the
+natural next step once the system spans multiple services.
+
 ## Testing
 
 The project has a three-layer test suite (16 tests):
@@ -283,7 +301,7 @@ Built out module by module. Current status:
 - [x] Testing (JUnit, MockMvc, Testcontainers)
 - [x] Containerization (Docker)
 - [x] Messaging (RabbitMQ, async events)
-- [ ] Observability (Actuator, metrics, structured logging)
+- [x] Observability (Actuator, metrics, structured logging)
 
 ## License
 

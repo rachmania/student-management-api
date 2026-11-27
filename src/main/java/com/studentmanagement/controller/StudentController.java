@@ -2,6 +2,8 @@ package com.studentmanagement.controller;
 
 import com.studentmanagement.messaging.EnrollmentPublisher;
 
+import com.studentmanagement.service.InstrumentedStudentService;
+
 import com.javamastery.module10.EnrollmentException;
 import com.javamastery.module10.Student;
 import com.javamastery.module10.StudentManagementService;
@@ -33,6 +35,7 @@ public class StudentController {
 
     private final StudentManagementService studentManagementService;
     private final EnrollmentPublisher enrollmentPublisher;
+    private final InstrumentedStudentService instrumentedStudentService;
 
 
     @GetMapping
@@ -63,11 +66,12 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
         Student student = new Student(request.id(), request.name(), request.email(), request.gpa());
-        studentManagementService.addStudent(student);
+        instrumentedStudentService.addStudent(student);   // ← was studentManagementService.addStudent(student)
         return ResponseEntity
                 .created(URI.create("/api/students/" + student.id()))
                 .body(StudentResponse.from(student));
     }
+
 
     @PostMapping("/{studentId}/enroll/{courseCode}")
     public ResponseEntity<Void> enroll(@PathVariable String studentId,
